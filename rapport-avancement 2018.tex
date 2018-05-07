@@ -1,0 +1,229 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{a4wide}
+
+\usepackage{acronym} % \ac[p], \acl[p], \acs[p], \acf[p]
+
+% Acronyms
+% --------
+\acrodef{CRDT}[CRDT]{Conflict-free Replicated Data Type}
+\acrodefplural{CRDT}[CRDTs]{Conflict-free Replicated Data Types}
+\acrodef{Loria}{Lorraine Research Laboratory in Computer Science and its Applications}
+\acrodef{OT}{Operational Transformation}
+
+% This document has to be filled (in English of French) by each PhD
+% student (and its supervisor for the second part), except for those
+% who will defend their thesis within the next weeks.
+% Once filled and signed, this document has to be sent to the CMI
+% (francoise.laurent@loria.fr) and to the members of the Comite de
+% Suivi de Thèse (formerly called referents).
+% Deadline: May 15, 2018.
+
+\begin{document}
+\bigskip
+\centerline{\Large\textbf{Progress report of a PhD Thesis -- 2017-2018}}
+\bigskip
+\bigskip
+
+\noindent\textbf{PhD student:}
+Matthieu NICOLAS
+\\
+
+\noindent\textbf{PhD year:}
+1\textsuperscript{st} year
+\\
+
+\noindent\textbf{Supervisors:}
+Olivier PERRIN and Gérald OSTER
+\\
+
+\noindent\textbf{Laboratory:}
+\ac{Loria}
+\\
+
+\noindent\textbf{Funding of the thesis:}
+Doctoral contract
+\\
+
+\noindent\textbf{Subject of the PhD thesis:}
+Efficient (re)naming in \acp{CRDT}
+\\
+
+
+\section*{Short description of the subject}
+% general context, considered approach, scientific objectives
+% compared to the state of the art
+
+\hspace{1em} In order to serve an ever-growing number of users and provide an increasing volume of data,
+large scale systems such as data stores or collaborative editing tools have to adopt a distributed architecture.
+However, as stated by the CAP theorem, such systems cannot ensure both strong consistency and high availability in case of network partitions.
+As a result, literature and companies increasingly adopt the optimistic replication model known as eventual consistency to replicate data among nodes.
+This consistency model allows replicas to temporarily diverge to be able to ensure high availability, even in case of network partition.
+Each node owns a copy of the data and can edit it, before propagating updates to others.
+A conflict resolution mechanism is however required to handle updates generated in parallel on different replicas.
+
+An approach, which gains in popularity since a few years, proposes to define \acfp{CRDT}.
+These data structures behave as traditional ones, like the \emph{Set} or \emph{Sequence} data structures, but are designed for a distributed usage.
+Their specification ensures that concurrent updates are resolved deterministically, without requiring any kind of agreement, and that replicas eventually converge immediately after observing some set of updates,
+thus achieving \emph{Strong Eventual Consistency}.
+
+% TODO: Rework the following paragraph
+To achieve convergence, \acp{CRDT} proposed in the literature mostly rely on unique identifiers to reference updated elements.
+To generate such element identifiers, nodes often use their own identifier as well as a logical clock.
+Thus, regarding to how node identifiers are generated, the size of element identifiers usually increases with the number of nodes.
+Furthermore, element identifiers have to comply to additional constraints according to the \ac{CRDT}, for example forming a dense set in case of a sequence data structure.
+In this case, element identifiers' size also increases according to the number of elements contained in the data structure.
+Therefore, the size of element identifiers is usually not bounded.
+
+Since the size of identifiers attached to each element is not bounded, the overhead of the replicated data structure increases over time.
+Since nodes have to store and broadcast the identifiers, the application's performances and efficiency decrease over time.
+This impedes the adoption of \acp{CRDT}.
+
+This PhD aims to address this issue.
+A first approach is to study identifiers proposed in the literature to list existing constraints on
+identifiers and their consequences on identifiers generation
+in order to propose more efficient specifications of identifiers.
+A second approach is to study this issue as a particular case of the renaming problem
+and to propose mechanisms to rename identifiers in order to reduce their size,
+still without requiring any kind of agreement between nodes.
+
+\section*{Main results}
+% studies and works achieved, results obtained with respect to the
+% objectives of the thesis; difficulties encountered
+
+\hspace{1em} During this first year, I focused on designing a renaming mechanism for \emph{Identifier-based Sequence \ac{CRDT}}.
+
+\subsection*{Identifier-based Sequence \acp{CRDT}}
+
+\hspace{1em} \emph{Identifier-based Sequence \acp{CRDT}} are data structures used to represent replicable lists.
+Two operations are defined to update them : \emph{insert} and \emph{delete}.
+
+The data structures attach an identifier to each inserted element.
+These identifiers allow us to achieve transaction-less and commutative updates by uniquely identifying each element and ordering them.
+
+The downside of this approach is the increasing size of the identifiers.
+Since the identifiers are used to order the elements, they have to form a dense set so that users are always able to insert a new element between two others.
+However, two identifiers of the same size can be contiguous.
+When inserting a new element between two such identifiers, we have no other choice than to increases the size of the generated identifier to be able to generate one respecting the intended order.
+
+\subsection*{Renaming mechanism}
+
+% Rename identifiers to have different but shorter ones
+
+% Other sites can perform updates concurrently
+
+% Cannot perform these updates on a renamed site directly
+% - Would not insert the element at the correct position
+% - Would not delete the correct element
+
+% Have to use OT
+% - Define transformation functions to transform the concurrent operations before applying them
+% - Need to transform insertions and deletions according to the renaming
+% - Need to transform the renaming according to insertions and deletions
+
+\begin{itemize}
+    \item Designed a renaming mechanism which does not require any kind of coordination
+    \begin{itemize}
+        \item Performing a local renaming to reduce the overhead of the data structure is straightforward
+        \item Broadcasting the renaming to other nodes also
+        \item The issue is to deal with concurrent updates to a renaming (for example, deleting an element using its identifier)
+        \item The main idea is to transform concurrent updates to a renaming to preserve the intention of the user
+    \end{itemize}
+    \item Introduced an optimization to reduce the bandwith comsuption of the renaming operation
+    \item Implementing its prototype in \emph{MUTE}, the collaborative editing tool from the team
+\end{itemize}
+
+\section*{Plan for next year}
+% remaining problems to be considered, approach; precise planning (in
+% particular for those who are at least in 3rd year, for the report
+% writing and the defense)
+
+% Need to evaluate the contribution
+\hspace{1em} The plan for the next year is to complete the implementation of the proposed renaming mechanism
+and to proceed to its validation.
+
+% - Simulation approach
+%   - Run simulations to benchmark performances
+%   - Compare results to state-of-the-art algorithms
+%   - Require logs
+
+To validate the mechanism, the first approach is to run simulations to benchmark its performances.
+The goal is to measure the gain in memory usage provided by the mechanism
+as well as its cost on the performances of the application.
+% TODO: Insert sentence about illustrating that the mechanism is worth it
+These simulations could also be used to compare the efficiency of different strategies
+regarding the conditions triggering the renaming process.
+
+The main issue regarding this approach is the authenticity of such simulations.
+Indeed, to run truthful simulations, the behaviour of the agents representing the collaborators should be credible.
+It is then required to study the literature on the behaviour of users in collaborations to reproduce their actions faithfully.
+
+% - Verification approach
+
+The second approach is to prove that transformation functions proposed are correct.
+Literature on \ac{OT} provides several constraints that such functions have to respect
+to ensure the correctness of the system.
+% TODO: Insert sentence about determining which constraints to comply with and proving that we do
+
+\section*{Publications}
+% if any
+\hspace{1em} No publications currently.
+
+\section*{Project after the thesis}
+% for 3rd year (and beyond) PhD students: professionnal project
+\hspace{1em} My current project is to pursue an academic career as a lecturer.
+
+\section*{Scientific and professional modules validated}
+% list of all modules validated from the beginning of the thesis
+% Remark: do not forget to add them in Adum, together with your publications
+
+\subsection*{Scientific modules}
+
+\begin{itemize}
+    \item Réplication et cohérence des données
+\end{itemize}
+
+\subsection*{Professionnal modules}
+
+\begin{itemize}
+    \item Fi4 152 E Sauveteur Secouriste du Travail (SST)
+    \item Fi4 162 C Formation à la communication orale et corporelle en milieu professionnel
+    \item Fi4 282 Outils numériques pour la pédagogie (plateforme Arche, studio professeur)
+\end{itemize}
+
+\bigskip
+\bigskip
+\noindent\textbf{Date and signature of the PhD student}
+............
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+
+\section*{Opinion of the supervisor}
+
+\noindent\textbf{Name of the supervisor:}
+............
+\\
+
+\noindent\textbf{Opinion on this progress report:}
+............
+\\
+
+\noindent\textbf{Agreement for an additional year?}
+Yes/No
+% if No, please justify
+\\
+
+\noindent\textbf{Date of the defense:}
+% this can be very approximative
+............
+\\
+
+\bigskip
+\bigskip
+\noindent\textbf{Date and signature of the supervisor}
+............
+
+
+\end{document}
