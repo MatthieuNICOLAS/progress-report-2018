@@ -4,6 +4,7 @@
 \usepackage{a4wide}
 
 \usepackage{acronym} % \ac[p], \acl[p], \acs[p], \acf[p]
+\usepackage[inline]{enumitem}
 
 % Acronyms
 % --------
@@ -92,12 +93,12 @@ still without requiring any kind of agreement between nodes.
 % studies and works achieved, results obtained with respect to the
 % objectives of the thesis; difficulties encountered
 
-\hspace{1em} During this first year, I focused on designing a renaming mechanism for \emph{Identifier-based Sequence \ac{CRDT}}.
+\hspace{1em} During this first year, I focused on designing a renaming mechanism for one family of \acp{CRDT} existing in the literature : \emph{Identifier-based Sequence \acp{CRDT}}.
 
 \subsection*{Identifier-based Sequence \acp{CRDT}}
 
 \hspace{1em} \emph{Identifier-based Sequence \acp{CRDT}} are data structures used to represent replicable lists.
-Two operations are defined to update them : \emph{insert} and \emph{delete}.
+Two operations are defined to update their states : \emph{insert} and \emph{delete}.
 
 The data structures attach an identifier to each inserted element.
 These identifiers allow us to achieve transaction-less and commutative updates by uniquely identifying each element and ordering them.
@@ -107,32 +108,40 @@ Since the identifiers are used to order the elements, they have to form a dense 
 However, two identifiers of the same size can be contiguous.
 When inserting a new element between two such identifiers, we have no other choice than to increases the size of the generated identifier to be able to generate one respecting the intended order.
 
+\emph{Identifier-based Sequence \acp{CRDT}} is a family of \acp{CRDT} particularly sensitive to the issue of ever-growing identifiers.
+For this reason, I focused on proposing a renaming mechanism for these data structures.
+
 \subsection*{Renaming mechanism}
 
 % Rename identifiers to have different but shorter ones
+\hspace{1em} The goal of such mechanism is to reassign shorter identifiers to each element of the data structure,
+without requiring any kind of agreement.
 
 % Other sites can perform updates concurrently
+However, being a distributed system, sites can perform updates and broadcast them while another site is performing concurrently the renaming process.
 
 % Cannot perform these updates on a renamed site directly
 % - Would not insert the element at the correct position
 % - Would not delete the correct element
+Upon the reception of these concurrent updates, the site which triggered the renaming process cannot apply them to its copy.
+Indeed, the identifiers having changed, performing the updates would not insert the elements at the correct positions nor delete the correct elements.
 
 % Have to use OT
 % - Define transformation functions to transform the concurrent operations before applying them
 % - Need to transform insertions and deletions according to the renaming
 % - Need to transform the renaming according to insertions and deletions
+To address this issue, we propose to use \ac{OT}.
+\ac{OT} proposes to transform an operation regarding to concurrent ones
+to adapt its effect to the new state of the copy and preserve the user's intention.
 
-\begin{itemize}
-    \item Designed a renaming mechanism which does not require any kind of coordination
-    \begin{itemize}
-        \item Performing a local renaming to reduce the overhead of the data structure is straightforward
-        \item Broadcasting the renaming to other nodes also
-        \item The issue is to deal with concurrent updates to a renaming (for example, deleting an element using its identifier)
-        \item The main idea is to transform concurrent updates to a renaming to preserve the intention of the user
-    \end{itemize}
-    \item Introduced an optimization to reduce the bandwith comsuption of the renaming operation
-    \item Implementing its prototype in \emph{MUTE}, the collaborative editing tool from the team
-\end{itemize}
+Using this approach, we propose
+\begin{enumerate*}
+    \item a new operation \emph{rename}, which reassign identifiers to each element
+    \item transformation functions to adapt the \emph{insert} and \emph{delete} operations to the effect of a concurrent \emph{rename} operation and conversely
+    \item an optimisation to reduce the bandwidth consumption of the \emph{rename} operation.
+\end{enumerate*}
+
+This mechanism is currently being implemented in \emph{MUTE}, the collaborative editing tool developed by the team.
 
 \section*{Plan for next year}
 % remaining problems to be considered, approach; precise planning (in
@@ -149,21 +158,22 @@ and to proceed to its validation.
 %   - Require logs
 
 To validate the mechanism, the first approach is to run simulations to benchmark its performances.
-The goal is to measure the gain in memory usage provided by the mechanism
-as well as its cost on the performances of the application.
-% TODO: Insert sentence about illustrating that the mechanism is worth it
-These simulations could also be used to compare the efficiency of different strategies
-regarding the conditions triggering the renaming process.
-
 The main issue regarding this approach is the authenticity of such simulations.
 Indeed, to run truthful simulations, the behaviour of the agents representing the collaborators should be credible.
 It is then required to study the literature on the behaviour of users in collaborations to reproduce their actions faithfully.
 
+Upon the completion of such simulations, the results will allow us to measure the gain in memory usage provided by the mechanism
+and its impact on the performances of the application.
+% TODO: Insert sentence about illustrating that the mechanism is worth it
+These simulations will also be used to compare the efficiency of different strategies
+regarding the conditions triggering the renaming process.
+
 % - Verification approach
 
 The second approach is to prove that transformation functions proposed are correct.
-Literature on \ac{OT} provides several constraints that such functions have to respect
+Literature on \ac{OT} defines several constraints that such functions have to respect
 to ensure the correctness of the system.
+We have to determine to which of these constraints our system needs to comply, and prove that it does.
 % TODO: Insert sentence about determining which constraints to comply with and proving that we do
 
 \section*{Publications}
