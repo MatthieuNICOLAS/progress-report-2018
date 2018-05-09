@@ -59,10 +59,10 @@ Efficient (re)naming in \acp{CRDT}
 \hspace{1em} In order to serve an ever-growing number of users and provide an increasing volume of data,
 large scale systems such as data stores or collaborative editing tools have to adopt a distributed architecture.
 However, as stated by the CAP theorem, such systems cannot ensure both strong consistency and high availability in case of network partitions.
-As a result, literature and companies increasingly adopt the optimistic replication model known as eventual consistency to replicate data among nodes.
+As a result, literature and companies increasingly adopt the optimistic replication model paired with the eventual consistency model to replicate data among nodes.
 This consistency model allows replicas to temporarily diverge to be able to ensure high availability, even in case of network partition.
 Each node owns a copy of the data and can edit it, before propagating updates to others.
-A conflict resolution mechanism is however required to handle updates generated in parallel on different replicas.
+A conflict resolution mechanism is however required to handle updates generated concurrently by different replicas.
 
 An approach, which gains in popularity since a few years, proposes to define \acfp{CRDT}.
 These data structures behave as traditional ones, like the \emph{Set} or \emph{Sequence} data structures, but are designed for a distributed usage.
