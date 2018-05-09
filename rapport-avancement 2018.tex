@@ -137,12 +137,11 @@ To address this issue, we propose to use \ac{OT}.
 \ac{OT} proposes to transform an operation regarding to concurrent ones
 to adapt its effect to the new state of the copy and preserve the user's intention.
 
-Using this approach, we propose
-\begin{enumerate*}
-    \item a new operation \emph{rename}, which reassign identifiers to each element
-    \item transformation functions to adapt the \emph{insert} and \emph{delete} operations to the effect of a concurrent \emph{rename} operation and conversely
-    \item an optimisation to reduce the bandwidth consumption of the \emph{rename} operation.
-\end{enumerate*}
+Using this approach, we define a new operation \emph{rename}, which reassign identifiers to each element.
+For simplification purposes, we make the assumption that this operation is only issuable by one node in the system,
+to prevent concurrent \emph{rename} operations for now.
+We then propose transformation functions to adapt the \emph{insert} and \emph{delete} operations to the effect of a concurrent \emph{rename} operation and conversely.
+Finally, we introduce an optimisation to reduce the bandwidth consumption of the \emph{rename} operation.
 
 This mechanism is currently being implemented in \emph{MUTE}, the collaborative editing tool developed by the team.
 
@@ -152,8 +151,12 @@ This mechanism is currently being implemented in \emph{MUTE}, the collaborative 
 % writing and the defense)
 
 % Need to evaluate the contribution
-\hspace{1em} The plan for the next year is to complete the implementation of the proposed renaming mechanism
-and to proceed to its validation.
+\hspace{1em} The plan for the next year is to
+\begin{enumerate*}
+    \item define a transformation function of \emph{rename} operations regarding to concurrent \emph{rename} operations, to remove the previously set constraint
+    \item complete the implementation of the proposed renaming mechanism
+    \item proceed to its validation.
+\end{enumerate*}
 
 % - Verification approach
 
