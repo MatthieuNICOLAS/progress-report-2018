@@ -13,6 +13,9 @@
 \acrodef{Loria}{Lorraine Research Laboratory in Computer Science and its Applications}
 \acrodef{OT}{Operational Transformation}
 
+\usepackage{etoolbox}
+\patchcmd{\thebibliography}{\section*{\refname}}{}{}{} % Remove auto-generated "References" by \bibliography
+
 % This document has to be filled (in English of French) by each PhD
 % student (and its supervisor for the second part), except for those
 % who will defend their thesis within the next weeks.
@@ -176,7 +179,9 @@ regarding the conditions triggering the renaming process.
 
 \section*{Publications}
 % if any
-\hspace{1em} No publications currently.
+\bibliographystyle{plain}
+\bibliography{publications}
+\nocite{*}
 
 \section*{Project after the thesis}
 % for 3rd year (and beyond) PhD students: professionnal project
