@@ -152,29 +152,27 @@ This mechanism is currently being implemented in \emph{MUTE}, the collaborative 
 \hspace{1em} The plan for the next year is to complete the implementation of the proposed renaming mechanism
 and to proceed to its validation.
 
+% - Verification approach
+
+To validate the mechanism, the first approach is to prove that transformation functions proposed are correct.
+Literature on \ac{OT} defines several constraints that such functions have to respect
+to ensure the correctness of the system.
+We have to determine to which of these constraints our system needs to comply with, and prove that it does.
+
 % - Simulation approach
 %   - Run simulations to benchmark performances
 %   - Compare results to state-of-the-art algorithms
 %   - Require logs
 
-To validate the mechanism, the first approach is to run simulations to benchmark its performances.
-The main issue regarding this approach is the authenticity of such simulations.
-Indeed, to run truthful simulations, the behaviour of the agents representing the collaborators should be credible.
+The second approach is to run simulations to benchmark its performances.
+The main issue regarding this approach is the accuracy of such simulations.
+Indeed, the actions of the agents representing the collaborators in these simulations should be as close as possible of the ones of users in real world scenarios.
 It is then required to study the literature on the behaviour of users in collaborations to reproduce their actions faithfully.
 
-Upon the completion of such simulations, the results will allow us to measure the gain in memory usage provided by the mechanism
-and its impact on the performances of the application.
+Upon the completion of such simulations, the results will allow us to measure the impact of the mechanism on the memory usage and the performances of the application.
 % TODO: Insert sentence about illustrating that the mechanism is worth it
 These simulations will also be used to compare the efficiency of different strategies
 regarding the conditions triggering the renaming process.
-
-% - Verification approach
-
-The second approach is to prove that transformation functions proposed are correct.
-Literature on \ac{OT} defines several constraints that such functions have to respect
-to ensure the correctness of the system.
-We have to determine to which of these constraints our system needs to comply, and prove that it does.
-% TODO: Insert sentence about determining which constraints to comply with and proving that we do
 
 \section*{Publications}
 % if any
