@@ -135,7 +135,7 @@ Indeed, the identifiers having changed, performing the updates would not insert 
 % - Need to transform insertions and deletions according to the renaming
 % - Need to transform the renaming according to insertions and deletions
 To address this issue, we propose to use \ac{OT}.
-\ac{OT} proposes to transform an operation regarding to concurrent ones
+\ac{OT} proposes to transform an operation against concurrent ones
 to adapt its effect to the new state of the copy and preserve the user's intention.
 
 Using this approach, we define a new operation \emph{rename}, which reassign identifiers to each element.
@@ -154,7 +154,7 @@ This mechanism is currently being implemented in \emph{MUTE}, the collaborative 
 % Need to evaluate the contribution
 \hspace{1em} The plan for the next year is to
 \begin{enumerate*}
-    \item define a transformation function of \emph{rename} operations regarding to concurrent \emph{rename} operations, to remove the previously set constraint
+    \item define a transformation function of \emph{rename} operations against concurrent \emph{rename} operations, to remove the previously set constraint
     \item complete the implementation of the proposed renaming mechanism
     \item proceed to its validation.
 \end{enumerate*}
